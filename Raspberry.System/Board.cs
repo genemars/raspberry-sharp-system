@@ -20,14 +20,17 @@ namespace Raspberry
         private static readonly Lazy<Board> board = new Lazy<Board>(LoadBoard);
 
         private readonly Dictionary<string, string> settings;
-        private readonly HashSet<string> raspberryPiProcessors = new HashSet<string>(new[]{ "BCM2708", "BCM2709" }, StringComparer.InvariantCultureIgnoreCase);
-        
+        private readonly Lazy<Model> model;
+        private readonly Lazy<ConnectorPinout> connectorPinout;
+
         #endregion
 
         #region Instance Management
 
         private Board(Dictionary<string, string> settings)
         {
+            model = new Lazy<Model>(LoadModel);
+            connectorPinout = new Lazy<ConnectorPinout>(LoadConnectorPinout);
             this.settings = settings;
         }
 
@@ -51,18 +54,50 @@ namespace Raspberry
         /// </value>
         public bool IsRaspberryPi
         {
-            get { return raspberryPiProcessors.Contains(Processor); }
+            get
+            {
+                return Processor != Processor.Unknown;
+            }
         }
 
         /// <summary>
-        /// Gets the processor.
+        /// Gets the processor name.
         /// </summary>
-        public string Processor
+        /// <value>
+        /// The name of the processor.
+        /// </value>
+        public string ProcessorName
         {
             get
             {
                 string hardware;
                 return settings.TryGetValue("Hardware", out hardware) ? hardware : null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the processor.
+        /// </summary>
+        /// <value>
+        /// The processor.
+        /// </value>
+        public Processor Processor
+        {
+            get
+            {
+                Processor processor;
+                if (Enum.TryParse(ProcessorName, true, out processor))
+                {
+                    // Check to see if we're dealing with a Pi 4 Model B
+                    // The Pi 4 Model B currently lies to us and tells us that it's a BCM2835
+                    if (processor == Processor.Bcm2835 && Model == Model.Pi4)
+                    {
+                        processor = Processor.Bcm2711;
+                    }
+                    return processor;
+                }
+
+                return  Processor.Unknown;
             }
         }
 
@@ -75,8 +110,8 @@ namespace Raspberry
             {
                 string revision;
                 int firmware;
-                if (settings.TryGetValue("Revision", out revision) 
-                    && !string.IsNullOrEmpty(revision) 
+                if (settings.TryGetValue("Revision", out revision)
+                    && !string.IsNullOrEmpty(revision)
                     && int.TryParse(revision, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out firmware))
                     return firmware;
 
@@ -89,9 +124,9 @@ namespace Raspberry
         /// </summary>
         public string SerialNumber
         {
-            get { 
+            get {
                 string serial;
-                if (settings.TryGetValue("Serial", out serial) 
+                if (settings.TryGetValue("Serial", out serial)
                     && !string.IsNullOrEmpty(serial))
                     return serial;
 
@@ -117,79 +152,24 @@ namespace Raspberry
         /// <summary>
         /// Gets the model.
         /// </summary>
-        /// <returns>The model name (<c>A</c> or <c>B</c>) if known; otherwise, <c>(char)0</c>.</returns>
-        public char Model
+        /// <value>
+        /// The model.
+        /// </value>
+        public Model Model
         {
-            get
-            {
-                var firmware = Firmware;
-                switch(firmware & 0xFFFF)
-                {
-                    case 0x7:
-                    case 0x8:
-                    case 0x9:
-                        return 'A';
-
-                    case 0x2:
-                    case 0x3:
-                    case 0x4:
-                    case 0x5:
-                    case 0x6:
-                    case 0xd:
-                    case 0xe:
-                    case 0xf:
-                    case 0x10:
-                        return 'B';
-
-                    case 0x1040:
-                    case 0x1041:
-                        return '2';
-
-                    default:
-                        return (char)0;
-                }
-            }
+            get { return model.Value; }
         }
 
         /// <summary>
-        /// Gets the board revision.
+        /// Gets the connector revision.
         /// </summary>
-        /// <returns>The board revision for the given <see cref="Model"/> if known; otherwise, <c>0</c>.</returns>
-        public int Revision
+        /// <value>
+        /// The connector revision.
+        /// </value>
+        /// <remarks>See <see cref="http://raspi.tv/2014/rpi-gpio-quick-reference-updated-for-raspberry-pi-b"/> for more information.</remarks>
+        public ConnectorPinout ConnectorPinout
         {
-            get
-            {
-                var firmware = Firmware;
-                switch (firmware & 0xFFFF)
-                {
-                    case 0x7:
-                    case 0x8:
-                    case 0x9:
-                        return 1;   // Model A, rev1
-
-                    case 0x2:
-                    case 0x3:
-                        return 1;   // Model B, rev1
-
-                    case 0x4:
-                    case 0x5:
-                    case 0x6:
-                    case 0xd:
-                    case 0xe:
-                    case 0xf:
-                        return 2;   // Model B, rev2
-
-                    case 0x10:
-                        return 3;   // Model B+, rev3
-                    
-                    case 0x1040:
-                    case 0x1041:
-                        return 4;
- 
-                    default:
-                        return 0;   // Unknown
-                }
-            }
+            get { return connectorPinout.Value; }
         }
 
         #endregion
@@ -201,11 +181,11 @@ namespace Raspberry
             try
             {
                 const string filePath = "/proc/cpuinfo";
-                
+
                 var cpuInfo = File.ReadAllLines(filePath);
                 var settings = new Dictionary<string, string>();
                 var suffix = string.Empty;
-                
+
                 foreach(var l in cpuInfo)
                 {
                     var separator = l.IndexOf(':');
@@ -228,6 +208,86 @@ namespace Raspberry
             catch
             {
                 return new Board(new Dictionary<string, string>());
+            }
+        }
+
+        private Model LoadModel()
+        {
+            var firmware = Firmware;
+            switch (firmware & 0xFFFF)
+            {
+                case 0x2:
+                case 0x3:
+                    return Model.BRev1;
+
+                case 0x4:
+                case 0x5:
+                case 0x6:
+                case 0xd:
+                case 0xe:
+                case 0xf:
+                    return Model.BRev2;
+
+                case 0x7:
+                case 0x8:
+                case 0x9:
+                    return Model.A;
+
+                case 0x10:
+                    return Model.BPlus;
+
+                case 0x11:
+                    return Model.ComputeModule;
+
+                case 0x12:
+                    return Model.APlus;
+
+                case 0x1040:
+                case 0x1041:
+                    return Model.B2;
+
+                case 0x0092:
+                case 0x0093:
+                    return Model.Zero;
+
+                case 0x2082:
+                    return Model.B3;
+                case 0x20A0:
+                    return Model.ComputeModule3;
+
+                case 0x03111:
+                case 0x03112:
+                case 0x03114:
+                    return Model.Pi4;
+
+                default:
+                    return Model.Unknown;
+            }
+        }
+
+        private ConnectorPinout LoadConnectorPinout()
+        {
+            switch (Model)
+            {
+                case Model.BRev1:
+                    return ConnectorPinout.Rev1;
+
+                case Model.BRev2:
+                case Model.A:
+                    return ConnectorPinout.Rev2;
+
+                case Model.BPlus:
+                case Model.ComputeModule:
+                case Model.APlus:
+                case Model.B2:
+                case Model.Zero:
+                case Model.B3:
+                case Model.ComputeModule3:
+                case Model.Pi4:
+                    return ConnectorPinout.Plus;
+
+                default:
+                    return ConnectorPinout.Unknown;
             }
         }
 
