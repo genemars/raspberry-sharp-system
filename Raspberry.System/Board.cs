@@ -94,9 +94,11 @@ namespace Raspberry
                     {
                         processor = Processor.Bcm2711;
                     }
+                    Console.WriteLine(processor);
                     return processor;
                 }
 
+                Console.WriteLine("Processor.Unknown");
                 return  Processor.Unknown;
             }
         }
@@ -198,6 +200,7 @@ namespace Raspberry
                             suffix = "." + val;
 
                         settings.Add(key + suffix, val);
+                        Console.WriteLine("setting.add = " + key + " + " + suffix + ", " + val);
                     }
                     else
                         suffix = "";
@@ -214,10 +217,13 @@ namespace Raspberry
         private Model LoadModel()
         {
             var firmware = Firmware;
+            Console.WriteLine("Firmware = " + firmware);
+            
             switch (firmware & 0xFFFF)
             {
                 case 0x2:
                 case 0x3:
+                    Console.WriteLine("Model.BRev1");
                     return Model.BRev1;
 
                 case 0x4:
@@ -226,41 +232,52 @@ namespace Raspberry
                 case 0xd:
                 case 0xe:
                 case 0xf:
+                    Console.WriteLine("Model.BRev2");
                     return Model.BRev2;
 
                 case 0x7:
                 case 0x8:
                 case 0x9:
+                    Console.WriteLine("Model.A");
                     return Model.A;
 
                 case 0x10:
+                    Console.WriteLine("Model.BPlus1");
                     return Model.BPlus;
 
                 case 0x11:
+                    Console.WriteLine("Model.ComputeModule");
                     return Model.ComputeModule;
 
                 case 0x12:
+                    Console.WriteLine("Model.APlus");
                     return Model.APlus;
 
                 case 0x1040:
                 case 0x1041:
+                    Console.WriteLine("Model.B2");
                     return Model.B2;
 
                 case 0x0092:
                 case 0x0093:
+                    Console.WriteLine("Model.Zero");
                     return Model.Zero;
 
                 case 0x2082:
+                    Console.WriteLine("Model.B3");
                     return Model.B3;
                 case 0x20A0:
+                    Console.WriteLine("Model.ComputeModule3");
                     return Model.ComputeModule3;
 
                 case 0x03111:
                 case 0x03112:
                 case 0x03114:
+                    Console.WriteLine("Model.Pi4");
                     return Model.Pi4;
 
                 default:
+                    Console.WriteLine("Model.Unknown");
                     return Model.Unknown;
             }
         }
@@ -270,10 +287,12 @@ namespace Raspberry
             switch (Model)
             {
                 case Model.BRev1:
+                    Console.WriteLine("ConnectorPinout.Rev1");
                     return ConnectorPinout.Rev1;
 
                 case Model.BRev2:
                 case Model.A:
+                    Console.WriteLine("ConnectorPinout.Rev2");
                     return ConnectorPinout.Rev2;
 
                 case Model.BPlus:
@@ -284,9 +303,11 @@ namespace Raspberry
                 case Model.B3:
                 case Model.ComputeModule3:
                 case Model.Pi4:
+                    Console.WriteLine("ConnectorPinout.Plus");
                     return ConnectorPinout.Plus;
 
                 default:
+                    Console.WriteLine("ConnectorPinout.Unknown");
                     return ConnectorPinout.Unknown;
             }
         }
