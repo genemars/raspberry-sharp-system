@@ -44,6 +44,7 @@ namespace Raspberry
         /// </summary>
         public static Board Current
         {
+            Console.WriteLine("Inside  Boards.cs Board Current");
             get { return board.Value; }
         }
 
@@ -55,6 +56,7 @@ namespace Raspberry
         /// </value>
         public bool IsRaspberryPi
         {
+            Console.WriteLine("Inside  Boards.cs IsRaspberryPi");
             get
             {
                 return Processor != Processor.Unknown;
@@ -69,6 +71,7 @@ namespace Raspberry
         /// </value>
         public string ProcessorName
         {
+            Console.WriteLine("Inside  Boards.cs ProcessorName");
             get
             {
                 string hardware;
@@ -84,6 +87,7 @@ namespace Raspberry
         /// </value>
         public Processor Processor
         {
+            Console.WriteLine("Inside  Boards.cs Processor");
             get
             {
                 Processor processor;
@@ -109,6 +113,7 @@ namespace Raspberry
         /// </summary>
         public int Firmware
         {
+            Console.WriteLine("Inside  Boards.cs Firmware");
             get
             {
                 string revision;
@@ -127,6 +132,7 @@ namespace Raspberry
         /// </summary>
         public string SerialNumber
         {
+            Console.WriteLine("Inside  Boards.cs SerialNumber");
             get {
                 string serial;
                 if (settings.TryGetValue("Serial", out serial)
@@ -145,6 +151,7 @@ namespace Raspberry
         /// </value>
         public bool IsOverclocked
         {
+            Console.WriteLine("Inside  Boards.cs IsOverclocked");
             get
             {
                 var firmware = Firmware;
@@ -160,6 +167,7 @@ namespace Raspberry
         /// </value>
         public Model Model
         {
+            Console.WriteLine("Inside  Boards.cs Model");
             get { return model.Value; }
         }
 
@@ -172,6 +180,7 @@ namespace Raspberry
         /// <remarks>See <see cref="http://raspi.tv/2014/rpi-gpio-quick-reference-updated-for-raspberry-pi-b"/> for more information.</remarks>
         public ConnectorPinout ConnectorPinout
         {
+            Console.WriteLine("Inside  Boards.cs ConnectorPinout");
             get { return connectorPinout.Value; }
         }
 
@@ -181,6 +190,7 @@ namespace Raspberry
 
         private static Board LoadBoard()
         {
+            Console.WriteLine("Inside  Boards.cs Board LoadBoard");
             try
             {
                 const string filePath = "/proc/cpuinfo";
@@ -201,7 +211,7 @@ namespace Raspberry
                             suffix = "." + val;
 
                         settings.Add(key + suffix, val);
-                        Console.WriteLine("setting.add = " + key + " + " + suffix + ", " + val);
+                        ///Console.WriteLine("setting.add = " + key + " + " + suffix + ", " + val);
                     }
                     else
                         suffix = "";
@@ -217,6 +227,7 @@ namespace Raspberry
 
         private Model LoadModel()
         {
+            Console.WriteLine("Inside  Boards.cs Model LoadModel");
             var firmware = Firmware;
             Console.WriteLine("Firmware = {0:x}", firmware);
             Console.WriteLine("Firmware & 0xFFFF = {0:x}", firmware & 0xFFFF);
@@ -286,6 +297,7 @@ namespace Raspberry
 
         private ConnectorPinout LoadConnectorPinout()
         {
+            Console.WriteLine("Inside  Boards.cs ConnectorPinout LoadConnectorPinout");
             switch (Model)
             {
                 case Model.BRev1:
