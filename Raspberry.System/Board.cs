@@ -218,8 +218,8 @@ namespace Raspberry
         private Model LoadModel()
         {
             var firmware = Firmware;
-            Console.WriteLine("Firmware = " + firmware);
-            ///Console.WriteLine("Firmware & 0xFFFF = " + firmware & 0xFFFF);
+            Console.WriteLine("Firmware = {0:x}", firmware);
+            Console.WriteLine("Firmware & 0xFFFF = {0:x}", firmware & 0xFFFF);
             
             switch (firmware & 0xFFFF)
             {
