@@ -91,8 +91,8 @@ namespace Raspberry
             get
             {
                 Processor processor;
-                if (Enum.TryParse(ProcessorName, true, out processor))
-                {
+                ///if (Enum.TryParse(ProcessorName, true, out processor))
+                ///{
                     // Model usually lies and reports BCM2835
                     switch (Model)
                     {
@@ -123,7 +123,7 @@ namespace Raspberry
                             processor = Processor.Unknown
                             return processor;
                     }
-                }
+                ///}
             }
         }
 
