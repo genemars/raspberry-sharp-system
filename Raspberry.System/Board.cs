@@ -219,7 +219,7 @@ namespace Raspberry
         {
             var firmware = Firmware;
             Console.WriteLine("Firmware = " + firmware);
-            Console.WriteLine("Firmware & 0xFFFF = " + firmware & 0xFFFF);
+            ///Console.WriteLine("Firmware & 0xFFFF = " + firmware & 0xFFFF);
             
             switch (firmware & 0xFFFF)
             {
