@@ -93,10 +93,18 @@ namespace Raspberry
                 Processor processor;
                 if (Enum.TryParse(ProcessorName, true, out processor))
                 {
+                    switch (Model)
+                    {
+                        case Model.B2:
+                            Console.WriteLine("Model.B2 = Bcm2836");
+                        case default:
+                            Console.Writeline("unknown");
+                    }
+                    /*
                     // Model usually lies and reports BCM2835
                     switch (Model)
                     {
-                        /*
+                        
                         case Model.A:
                         case Model.APlus:
                         case Model.BRev1:
@@ -106,11 +114,11 @@ namespace Raspberry
                         case Model.Zero:
                             processor = Processor.Bcm2835;
                             return processor;
-                        */    
+                            
                         case Model.B2:
                             processor = Processor.Bcm2836
                             return processor;
-                        /*  
+                          
                         case Model.B3:
                         case Model.ComputeModule3:
                             processor = Processor.Bcm2837
@@ -119,11 +127,12 @@ namespace Raspberry
                         case Model.Pi4:
                             processor = Processor.Bcm2711;
                             return processor;
-                        */    
+                            
                         case default:
                             processor = Processor.Unknown
                             return processor;
                     }
+                    */
                 }
             }
         }
