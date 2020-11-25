@@ -32,6 +32,7 @@ namespace Raspberry
             model = new Lazy<Model>(LoadModel);
             connectorPinout = new Lazy<ConnectorPinout>(LoadConnectorPinout);
             this.settings = settings;
+            Console.WriteLine("connectorPinout = " + connectorPinout);
         }
 
         #endregion
