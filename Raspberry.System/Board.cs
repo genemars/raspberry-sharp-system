@@ -115,12 +115,12 @@ namespace Raspberry
                         return processor;
 
                     case Model.B2:
-                        processor = Processor.Bcm2836
+                        processor = Processor.Bcm2836;
                         return processor;
 
                     case Model.B3:
                     case Model.ComputeModule3:
-                        processor = Processor.Bcm2837
+                        processor = Processor.Bcm2837;
                         return processor;
 
                     case Model.Pi4:
