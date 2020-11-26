@@ -128,7 +128,7 @@ namespace Raspberry
                         return processor;
 
                     default:
-                        processor = Processor.Unknown
+                        processor = Processor.Unknown;
                         return processor;
                 }
 
