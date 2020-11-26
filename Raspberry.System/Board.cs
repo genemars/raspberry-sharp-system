@@ -114,8 +114,21 @@ namespace Raspberry
                         processor = Processor.Bcm2835;
                         return processor;
 
+                    case Model.B2:
+                        processor = Processor.Bcm2836
+                        return processor;
+
+                    case Model.B3:
+                    case Model.ComputeModule3:
+                        processor = Processor.Bcm2837
+                        return processor;
+
+                    case Model.Pi4:
+                        processor = Processor.Bcm2711;
+                        return processor;
+
                     default:
-                        processor = Processor.Unknown;
+                        processor = Processor.Unknown
                         return processor;
                 }
 
