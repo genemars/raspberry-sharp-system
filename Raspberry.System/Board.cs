@@ -93,47 +93,16 @@ namespace Raspberry
                 Processor processor;
                 if (Enum.TryParse(ProcessorName, true, out processor))
                 {
-                    switch (Model)
+                    // Check to see if we're dealing with a Pi 4 Model B
+                    // The Pi 4 Model B currently lies to us and tells us that it's a BCM2835
+                    if (processor == Processor.Bcm2835 && Model == Model.Pi4)
                     {
-                        case Model.B2:
-                            Console.WriteLine("Model.B2 = Bcm2836");
-                        case default:
-                            Console.Writeline("unknown");
+                        processor = Processor.Bcm2711;
                     }
-                    /*
-                    // Model usually lies and reports BCM2835
-                    switch (Model)
-                    {
-                        
-                        case Model.A:
-                        case Model.APlus:
-                        case Model.BRev1:
-                        case Model.BRev2:
-                        case Model.BPlus:
-                        case Model.ComputeModule:
-                        case Model.Zero:
-                            processor = Processor.Bcm2835;
-                            return processor;
-                            
-                        case Model.B2:
-                            processor = Processor.Bcm2836
-                            return processor;
-                          
-                        case Model.B3:
-                        case Model.ComputeModule3:
-                            processor = Processor.Bcm2837
-                            return processor;
-                            
-                        case Model.Pi4:
-                            processor = Processor.Bcm2711;
-                            return processor;
-                            
-                        case default:
-                            processor = Processor.Unknown
-                            return processor;
-                    }
-                    */
+                    return processor;
                 }
+
+                return  Processor.Unknown;
             }
         }
 
