@@ -7,7 +7,6 @@ namespace Test.Board
     {
         static void Main()
         {
-            ///Console.WriteLine("Inside Test.Board Main");
             var board = Raspberry.Board.Current;
 
             if (!board.IsRaspberryPi)
