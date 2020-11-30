@@ -111,16 +111,13 @@ namespace Raspberry
                     case Model.BPlus:
                     case Model.ComputeModule:
                     case Model.Zero:
-                        processor = Processor.Bcm2835;
+                        processor = Processor.Bcm2708;
                         return processor;
 
                     case Model.B2:
-                        processor = Processor.Bcm2836;
-                        return processor;
-
                     case Model.B3:
                     case Model.ComputeModule3:
-                        processor = Processor.Bcm2837;
+                        processor = Processor.Bcm2709;
                         return processor;
 
                     case Model.Pi4:
@@ -301,6 +298,7 @@ namespace Raspberry
 
                 case 0x0092:
                 case 0x0093:
+                case 0x00C1:
                     Console.WriteLine("Model.Zero");
                     return Model.Zero;
 
