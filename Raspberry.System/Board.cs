@@ -32,7 +32,6 @@ namespace Raspberry
             model = new Lazy<Model>(LoadModel);
             connectorPinout = new Lazy<ConnectorPinout>(LoadConnectorPinout);
             this.settings = settings;
-            Console.WriteLine("connectorPinout = " + connectorPinout);
         }
 
         #endregion
@@ -44,7 +43,6 @@ namespace Raspberry
         /// </summary>
         public static Board Current
         {
-            ///Console.WriteLine("Inside  Boards.cs Board Current");
             get { return board.Value; }
         }
 
@@ -56,7 +54,6 @@ namespace Raspberry
         /// </value>
         public bool IsRaspberryPi
         {
-            ///Console.WriteLine("Inside  Boards.cs IsRaspberryPi");
             get
             {
                 return Processor != Processor.Unknown;
@@ -71,7 +68,6 @@ namespace Raspberry
         /// </value>
         public string ProcessorName
         {
-            ///Console.WriteLine("Inside  Boards.cs ProcessorName");
             get
             {
                 string hardware;
@@ -87,21 +83,9 @@ namespace Raspberry
         /// </value>
         public Processor Processor
         {
-            ///Console.WriteLine("Inside  Boards.cs Processor");
             get
             {
                 Processor processor;
-                //if (Enum.TryParse(ProcessorName, true, out processor))
-                //{
-                //    // Check to see if we're dealing with a Pi 4 Model B
-                //    // The Pi 4 Model B currently lies to us and tells us that it's a BCM2835
-                //    if (processor == Processor.Bcm2835 && Model == Model.Pi4)
-                //    {
-                //        processor = Processor.Bcm2711;
-                //    }
-                //    return processor;
-                //}
-
                 switch (Model)
                 {
                     case Model.A:
@@ -138,7 +122,6 @@ namespace Raspberry
         /// </summary>
         public int Firmware
         {
-            ///Console.WriteLine("Inside  Boards.cs Firmware");
             get
             {
                 string revision;
@@ -157,7 +140,6 @@ namespace Raspberry
         /// </summary>
         public string SerialNumber
         {
-            ///Console.WriteLine("Inside  Boards.cs SerialNumber");
             get {
                 string serial;
                 if (settings.TryGetValue("Serial", out serial)
@@ -176,7 +158,6 @@ namespace Raspberry
         /// </value>
         public bool IsOverclocked
         {
-            ///Console.WriteLine("Inside  Boards.cs IsOverclocked");
             get
             {
                 var firmware = Firmware;
@@ -192,7 +173,6 @@ namespace Raspberry
         /// </value>
         public Model Model
         {
-            ///Console.WriteLine("Inside  Boards.cs Model");
             get { return model.Value; }
         }
 
@@ -205,7 +185,6 @@ namespace Raspberry
         /// <remarks>See <see cref="http://raspi.tv/2014/rpi-gpio-quick-reference-updated-for-raspberry-pi-b"/> for more information.</remarks>
         public ConnectorPinout ConnectorPinout
         {
-            ///Console.WriteLine("Inside  Boards.cs ConnectorPinout");
             get { return connectorPinout.Value; }
         }
 
@@ -215,7 +194,6 @@ namespace Raspberry
 
         private static Board LoadBoard()
         {
-            ///Console.WriteLine("Inside  Boards.cs Board LoadBoard");
             try
             {
                 const string filePath = "/proc/cpuinfo";
@@ -236,7 +214,6 @@ namespace Raspberry
                             suffix = "." + val;
 
                         settings.Add(key + suffix, val);
-                        ///Console.WriteLine("setting.add = " + key + " + " + suffix + ", " + val);
                     }
                     else
                         suffix = "";
@@ -252,16 +229,12 @@ namespace Raspberry
 
         private Model LoadModel()
         {
-            ///Console.WriteLine("Inside  Boards.cs Model LoadModel");
             var firmware = Firmware;
-            Console.WriteLine("Firmware = {0:x}", firmware);
-            Console.WriteLine("Firmware & 0xFFFF = {0:x}", firmware & 0xFFFF);
             
             switch (firmware & 0xFFFF)
             {
                 case 0x2:
                 case 0x3:
-                    Console.WriteLine("Model.BRev1");
                     return Model.BRev1;
 
                 case 0x4:
@@ -270,69 +243,55 @@ namespace Raspberry
                 case 0xd:
                 case 0xe:
                 case 0xf:
-                    Console.WriteLine("Model.BRev2");
                     return Model.BRev2;
 
                 case 0x7:
                 case 0x8:
                 case 0x9:
-                    Console.WriteLine("Model.A");
                     return Model.A;
 
                 case 0x10:
-                    Console.WriteLine("Model.BPlus1");
                     return Model.BPlus;
 
                 case 0x11:
-                    Console.WriteLine("Model.ComputeModule");
                     return Model.ComputeModule;
 
                 case 0x12:
-                    Console.WriteLine("Model.APlus");
                     return Model.APlus;
 
                 case 0x1040:
                 case 0x1041:
-                    Console.WriteLine("Model.B2");
                     return Model.B2;
 
                 case 0x0092:
                 case 0x0093:
                 case 0x00C1:
-                    Console.WriteLine("Model.Zero");
                     return Model.Zero;
 
                 case 0x2082:
-                    Console.WriteLine("Model.B3");
                     return Model.B3;
                 case 0x20A0:
-                    Console.WriteLine("Model.ComputeModule3");
                     return Model.ComputeModule3;
 
                 case 0x03111:
                 case 0x03112:
                 case 0x03114:
-                    Console.WriteLine("Model.Pi4");
                     return Model.Pi4;
 
                 default:
-                    Console.WriteLine("Model.Unknown");
                     return Model.Unknown;
             }
         }
 
         private ConnectorPinout LoadConnectorPinout()
         {
-            ///Console.WriteLine("Inside  Boards.cs ConnectorPinout LoadConnectorPinout");
             switch (Model)
             {
                 case Model.BRev1:
-                    Console.WriteLine("ConnectorPinout.Rev1");
                     return ConnectorPinout.Rev1;
 
                 case Model.BRev2:
                 case Model.A:
-                    Console.WriteLine("ConnectorPinout.Rev2");
                     return ConnectorPinout.Rev2;
 
                 case Model.BPlus:
@@ -343,11 +302,9 @@ namespace Raspberry
                 case Model.B3:
                 case Model.ComputeModule3:
                 case Model.Pi4:
-                    Console.WriteLine("ConnectorPinout.Plus");
                     return ConnectorPinout.Plus;
 
                 default:
-                    Console.WriteLine("ConnectorPinout.Unknown");
                     return ConnectorPinout.Unknown;
             }
         }
