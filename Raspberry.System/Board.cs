@@ -226,7 +226,8 @@ namespace Raspberry
                 return new Board(new Dictionary<string, string>());
             }
         }
-
+        
+        /// HW revision derived from: https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md
         private Model LoadModel()
         {
             var firmware = Firmware;
@@ -269,8 +270,12 @@ namespace Raspberry
                     return Model.Zero;
 
                 case 0x2082:
+                case 0x2083:
+                case 0x20D3: ///3A+ and 3B+
                     return Model.B3;
+                    
                 case 0x20A0:
+                case 0x2100: ///CM3+
                     return Model.ComputeModule3;
 
                 case 0x03111:
