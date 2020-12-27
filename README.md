@@ -18,5 +18,19 @@ Raspberry.System provides utilities for Raspberry Pi boards, while using .NET co
 You can easily add a reference to it in your Visual Studio projects using the **[Raspberry.System Nuget](https://www.nuget.org/packages/Raspberry.System)**.
 
 It currently support the following features:
-+ Automatic detection of various Raspberry Pi revisions, as of 2013-09, **Raspberry Pi model B rev1 and rev2 and Raspberry Pi model A**
-+ High resolution (about 1µs) timers
++ Automatic detection of various Raspberry Pi revisions, as of December 2020, **Raspberry Pi model 1 through 4 hardware (including compute modules and zero)**
++ High resolution (about 1Âµs) timers
+
+
+Compile
+-------
++ Clone the code to your system
+  sudo git clone https://github.com/bkenobi/raspberry-sharp-system.git
++ change owner/group to pi (or whatever you log on as)
+  sudo chown -R pi <development directory>;  sudo chgrp -R pi <development directory>
++ install mono-devel
+  sudo apt install mono-devel
++ Compile Test.Board
+  msbuild Test.Board.csproj
++ run Test.Board.exe to confirm the code runs
+  mono Test.Board.exe
