@@ -24,13 +24,8 @@ It currently support the following features:
 
 Compile
 -------
-+ Clone the code to your system
-  sudo git clone https://github.com/bkenobi/raspberry-sharp-system.git
-+ change owner/group to pi (or whatever you log on as)
-  sudo chown -R pi <development directory>;  sudo chgrp -R pi <development directory>
-+ install mono-devel
-  sudo apt install mono-devel
-+ Compile Test.Board
-  msbuild Test.Board.csproj
-+ run Test.Board.exe to confirm the code runs
-  mono Test.Board.exe
++ Clone the code to your system:  sudo git clone https://github.com/bkenobi/raspberry-sharp-system.git
++ change owner/group to pi (or whatever you log on as):  sudo chown -R pi **development directory**;  sudo chgrp -R pi **development directory**
++ install mono-devel:  sudo apt install mono-devel
++ Compile Test.Board:  msbuild Test.Board.csproj
++ run Test.Board.exe to confirm the code runs:  mono Test.Board.exe
