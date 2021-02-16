@@ -11,12 +11,12 @@ namespace Raspberry
         Unknown,
 
         /// <summary>
-        /// Processor is a BCM2708.
+        /// Processor is a BCM2708
         /// </summary>
         Bcm2708,
 
         /// <summary>
-        /// Processor is a BCM2709.
+        /// Processor is a BCM2709
         /// </summary>
         Bcm2709,
 

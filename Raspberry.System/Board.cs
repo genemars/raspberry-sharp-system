@@ -86,18 +86,34 @@ namespace Raspberry
             get
             {
                 Processor processor;
-                if (Enum.TryParse(ProcessorName, true, out processor))
+                switch (Model)
                 {
-                    // Check to see if we're dealing with a Pi 4 Model B
-                    // The Pi 4 Model B currently lies to us and tells us that it's a BCM2835
-                    if (processor == Processor.Bcm2835 && Model == Model.Pi4)
-                    {
+                    case Model.A:
+                    case Model.APlus:
+                    case Model.BRev1:
+                    case Model.BRev2:
+                    case Model.BPlus:
+                    case Model.ComputeModule:
+                    case Model.Zero:
+                        processor = Processor.Bcm2708;
+                        return processor;
+
+                    case Model.B2:
+                    case Model.B3:
+                    case Model.ComputeModule3:
+                        processor = Processor.Bcm2709;
+                        return processor;
+
+                    case Model.Pi4:
                         processor = Processor.Bcm2711;
-                    }
-                    return processor;
+                        return processor;
+
+                    default:
+                        processor = Processor.Unknown;
+                        return processor;
                 }
 
-                return  Processor.Unknown;
+                return Processor.Unknown;
             }
         }
 
@@ -210,10 +226,12 @@ namespace Raspberry
                 return new Board(new Dictionary<string, string>());
             }
         }
-
+        
+        /// HW revision derived from: https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md
         private Model LoadModel()
         {
             var firmware = Firmware;
+            
             switch (firmware & 0xFFFF)
             {
                 case 0x2:
@@ -248,11 +266,16 @@ namespace Raspberry
 
                 case 0x0092:
                 case 0x0093:
+                case 0x00C1:
                     return Model.Zero;
 
                 case 0x2082:
+                case 0x2083:
+                case 0x20D3: ///3A+ and 3B+
                     return Model.B3;
+                    
                 case 0x20A0:
+                case 0x2100: ///CM3+
                     return Model.ComputeModule3;
 
                 case 0x03111:
